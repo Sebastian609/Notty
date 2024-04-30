@@ -1,6 +1,5 @@
+'use client'
 import React, { useState } from "react";
-import IconMenuInteractive from '../InteractiveIcons/IconMenuInteractive'
-("use-client");
 
 export default function Header() {
   const toggleMenu = () => {
@@ -10,14 +9,14 @@ export default function Header() {
     return (
       <div className="md:hidden p-5">
         <button className="relative group " onClick={toggleMenu}>
-        <IconMenuInteractive></IconMenuInteractive>
+  
         </button>
       </div>
     );
   };
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <header className="bg-gray-800 text-white mb-5">
+    <header className="bg-gray-800 text-white mb-5  z-30 w-full">
       <div className=" flex justify-between items-center ">
         <div>
           <h1 className="text-2xl font-semibold p-5">Notty</h1>
