@@ -17,10 +17,6 @@ export const metadata: Metadata = {
   description: "Test",
 };
 
-const HeaderNOSSR = dynamic(
-  () => import('@/app/modules/Header/Header'),
-  { ssr: false }
-);
 
 export default function RootLayout({
   children,
@@ -30,8 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       
-      <body className={poppins.className}>
-        <HeaderNOSSR/>
+      <body className={`${poppins.className} h-svh`} >
+
         {children}</body>
     </html>
   );

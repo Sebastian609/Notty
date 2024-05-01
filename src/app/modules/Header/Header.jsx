@@ -9,7 +9,6 @@ export default function Header() {
     return (
       <div className="md:hidden p-5">
         <button className="relative group " onClick={toggleMenu}>
-  
         </button>
       </div>
     );

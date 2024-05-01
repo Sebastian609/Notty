@@ -1,22 +1,20 @@
-import { Task } from "@/app/Dto/Task";
+import { Task } from "@/app/Dto/Task"
 
-export const getMainTasks = async () => {
+export const setTaskAsComplete  = async (idTask: number) =>{
+
     try {
-        const response = await fetch(`${process.env.NOTTY_BACKEND_HOSTNAME}/tasks/owner/14`, {
+        const response = await fetch(`${process.env}/tasks/changeStatus/${idTask}`, {
             headers: {
                 'Authorization': process.env.NOTTY_API_KEY || ''
             }
         });
-
         if (!response.ok) {
             throw new Error('Failed to fetch tasks');
         }
 
         const data = await response.json();
-        console.log(data)
 
-        // Mapea los datos de la respuesta a objetos Task
-        const tasks: Task[] = data.map((taskData: any) => ({
+        const task: Task = data.map((taskData: any) => ({
             idTask: taskData.idTask,
             idUserCreator: taskData.idUserCreator,
             taskStatus: taskData.taskStatus,
@@ -30,10 +28,9 @@ export const getMainTasks = async () => {
                 idUser: taskData.userOwner.idUser
             }
         }));
-
-        return tasks;
+        return task;
     } catch (error) {
         console.error('Error fetching tasks:', error);
-        return []; // Devuelve una lista vacía en caso de error
+        return []; 
     }
-};
+}
