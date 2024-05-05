@@ -1,10 +1,11 @@
 import { Task } from "@/app/Dto/Task";
 
 export const getMainTasks = async () => {
+    console.log(`${process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME}/tasks/owner/14`)
     try {
-        const response = await fetch(`${process.env.NOTTY_BACKEND_HOSTNAME}/tasks/owner/14`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME}/tasks/owner/14`, {
             headers: {
-                'Authorization': process.env.NOTTY_API_KEY || ''
+                'Authorization': process.env.NEXT_PUBLIC_NOTTY_API_KEY || ''
             }
         });
 

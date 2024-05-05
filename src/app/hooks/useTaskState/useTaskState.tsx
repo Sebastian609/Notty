@@ -1,21 +1,21 @@
+import { Task } from "@/app/Dto/Task";
 import { setTaskAsComplete } from "@/app/Service/Notty-API/setTaskAsComplete";
+import { updateTask } from "@/app/Service/Notty-API/updateTask";
 
-const useTaskState = () => {
-    const markTaskAsComplete = (idTask: number) => {
-    setTaskAsComplete(idTask)
-    }
-    
+const useTaskState = () => 
+{
+  const markTaskAsComplete = async (idTask: number) => {
+    const newTask = await setTaskAsComplete(idTask);
+    return newTask;
+  };
 
-    const deleteTask = (idTask: number) => {
-        alert("Task deleted");
-    }
-    
+  const updateTask = async(updatedTask:Task) =>{
+    console.log("s")
+    const newTask: Task = await updateTask(updatedTask);
+    return newTask;
+  }
 
-    const updateTask = (idTask: number) => {
-        alert("updated");
-    }
-  
 
-    return { markTaskAsComplete, deleteTask, updateTask };
-}
+  return { markTaskAsComplete, updateTask };
+};
 export default useTaskState;

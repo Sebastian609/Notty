@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
 import dynamic from "next/dynamic";
 
 import "@/app/globals.css";
 import Head from "next/head";
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-poppins',
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       
-      <body className={`${poppins.className} h-svh`} >
+      <body className={`${inter.className}`} >
 
         {children}</body>
     </html>

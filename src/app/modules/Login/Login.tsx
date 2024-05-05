@@ -8,7 +8,7 @@ export default function Login() {
         <input className='border-2' type="email" name="" id="" />
         <input className='border-2' type="password" name="" id="" />
         <button  type="submit">Enviar</button>
-      </form>
+      </form>   
     </div>
   )
 }

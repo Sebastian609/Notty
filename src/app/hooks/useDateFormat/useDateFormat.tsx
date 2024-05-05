@@ -16,7 +16,12 @@ const useDateFormat = () => {
         return date.toLocaleDateString('es-ES', options);
     };
 
-    return { formatDate };
+    const stringToDate = (dateString: string) =>{
+        const date = new Date(dateString);
+        return date
+    }
+
+    return { formatDate,stringToDate };
 };
 
 export default useDateFormat;
