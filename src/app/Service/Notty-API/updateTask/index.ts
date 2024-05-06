@@ -2,7 +2,7 @@ import { Task } from "@/app/Dto/Task";
 
 export const updateTask = async (updatedTask: Task): Promise<Task> => {
     try {
-        console.log(updatedTask.toJSON)
+        console.log(updatedTask)
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME}/tasks`,
             {

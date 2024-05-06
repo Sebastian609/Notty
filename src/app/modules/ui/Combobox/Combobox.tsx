@@ -30,10 +30,11 @@ type Status = {
 interface ComboBoxStatusProps {
   currentStatus: Status | null;
   currentDeadline: string;
+  handleSelectedStatus: (status:Status)=>void
 }
 
 export function Combobox(props: ComboBoxStatusProps) {
-  const { currentStatus, currentDeadline } = props;
+  const { currentStatus, currentDeadline,handleSelectedStatus } = props;
   const [open, setOpen] = useState(false);
   const { stringToDate } = useDateFormat();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -46,7 +47,7 @@ export function Combobox(props: ComboBoxStatusProps) {
       label: "IN_PROGRESS",
     },
     {
-      value: "CANCELED",
+      value: "CANCELLED",
       label: "CANCELLED",
     },
   ];
@@ -63,12 +64,15 @@ export function Combobox(props: ComboBoxStatusProps) {
     useEffect(() => {
       const deadline = stringToDate(currentDeadline);
       setStatuses(calculateStatuses(deadline));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentDeadline]);
 
   const handleStatusClick = useCallback((status: Status) => {
     setSelectedStatus(status);
     setOpen(false);
     console.log("Status clicked:", status);
+    handleSelectedStatus(status)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const StatusListComponent = (

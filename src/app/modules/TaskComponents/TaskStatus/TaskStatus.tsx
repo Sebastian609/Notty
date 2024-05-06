@@ -16,7 +16,7 @@ export default function TaskStatus(props: TaskStatusProps) {
       case "COMPLETED":
         setStatusColor("bg-emerald-500");
         break;
-      case "CANCELED":
+      case "CANCELLED":
         setStatusColor("bg-red-500");
         break;
       case "COMPLETED_WHIT_DELAY":

@@ -3,15 +3,10 @@ import React, { useEffect, useState } from "react";
 import { CircleXmark } from "../../Shared/Icons/Circle-Xmark";
 import useDateFormat from "@/app/hooks/useDateFormat/useDateFormat";
 import { Combobox } from "../../ui/Combobox/Combobox";
-import { updateTask } from "@/app/Service/Notty-API/updateTask";
-import { CalendarComponent } from "../../ui/CalendarComponent";
-import useTaskState from "@/app/hooks/useTaskState/useTaskState";
-import { setTaskAsComplete } from "@/app/Service/Notty-API/setTaskAsComplete";
 
 interface TaskModalProps {
   task: Task;
-  onHideModal: (updatedTask: Task) => void; // Función para ocultar el modal
-
+  onHideModal: (updatedTask: Task) => void; 
 }
 
 export default function TaskModal(props: TaskModalProps) {
@@ -19,57 +14,60 @@ export default function TaskModal(props: TaskModalProps) {
     value: string;
     label: string;
   };
-  
-  const { task, onHideModal} = props;
+
+  const { task, onHideModal } = props;
   const { formatDate } = useDateFormat();
-  const [localTaskData, setLocalTaskData] = useState<Task>(task)
+  const [localTaskData, setLocalTaskData] = useState<Task>(task);
   const [name, setName] = useState(task.name);
   const [description, setDescription] = useState(task.description);
-  const [timeLimit, setTimeLimit] = useState(task.timeLimit);
+  const [deadline, setDeadline] = useState(task.timeLimit);
   const [status, setStatus] = useState<Status | null>({
     value: task.taskStatus,
     label: task.taskStatus,
   });
 
-  const updateLocal = () =>{
-   const updatedTask = new Task({
+  useEffect(() => {
+    const updatedTask = new Task({
       idTask: task.idTask,
       idUserCreator: task.idUserCreator,
-      taskStatus: task.taskStatus,
-      name: name,             
+      taskStatus: status!=null?status.value:task.taskStatus,
+      name: name,
       description: description,
       createrAt: task.createrAt,
       updatedAt: task.updatedAt,
-      timeLimit: task.timeLimit,
+      timeLimit: deadline,
       activeTask: task.activeTask,
-      userOwner: { idUser: task.userOwner.idUser }
+      userOwner: { idUser: task.userOwner.idUser },
     });
-    return updatedTask
-  }
-
-
+  
+    setLocalTaskData(updatedTask);
+  }, [deadline, name, description, task,status]);
+  
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newName = event.target.value;
     setName(newName);
-    setLocalTaskData(updateLocal());
 
   };
 
-  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newDescription = event.target.value;
-    setDescription(newDescription);
-    setLocalTaskData(updateLocal());
-
-  };
-  
-  
-
-  const handleTimeLimitChange = (
+  const handleDescriptionChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setTimeLimit(event.target.value);
+    const newDescription = event.target.value;
+    setDescription(newDescription);
+
   };
+
+  const handleDeadLineChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newDeadline = event.target.value;
+    setDeadline(newDeadline);
+
+  };
+
+  const handleSelectedStatus = (status:Status) => {
+    const newStatus = status;
+    setStatus(newStatus);
+  }
 
   const handleModalHide = () => {
     onHideModal(localTaskData);
@@ -88,27 +86,31 @@ export default function TaskModal(props: TaskModalProps) {
             className="w-5 h-5 absolute top-4 right-4 transition ease-in hover:scale-110 fill-slate-600 hover:fill-red-500 cursor-pointer"
           />
 
-          <Combobox currentDeadline={timeLimit} currentStatus={status} />
+          <Combobox handleSelectedStatus={handleSelectedStatus} currentDeadline={deadline} currentStatus={status} />
 
           <label>Title: </label>
           <input
             className="text-lg font-bold pb-2 border-b-2 focus:outline-none"
             value={name}
             onChange={handleNameChange}
-            
           />
 
           <label>Description: </label>
           <input
             className="text-lg selection:none pb-2 border-b-2 focus:outline-none"
             value={description}
-            onChange={handleDescriptionChange}  
+            onChange={handleDescriptionChange}
             required
           />
 
           <div>
             <label htmlFor="deadline">Deadline: </label>
-            <CalendarComponent dateString={timeLimit} />
+            <input
+              onChange={handleDeadLineChange}
+              className="p-2 border-1 border-slate-500 rounded-lg"
+              type="datetime-local"
+              value={deadline}
+            ></input>
           </div>
 
           <div className="flex justify-between items-center mt-4">

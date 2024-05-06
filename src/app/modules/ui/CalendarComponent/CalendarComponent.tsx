@@ -8,20 +8,17 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 interface CalendarComponentProps {
   dateString: string;
+  onChange: (newDate: Date|undefined) => void;
 }
 
 export function CalendarComponent(props: CalendarComponentProps) {
-  const { dateString } = props;
-
-  const [date, setDate] = useState<Date | undefined>(new Date()); // Establecer la fecha inicial aquí
-
-  useEffect(() => {
-    // Convertir la cadena de fecha en un objeto Date y establecerlo como fecha inicial
-    if (dateString) {
-      setDate(new Date(dateString));
-      
-    }
-  }, [dateString]); // Ejecutar este efecto cuando dateString cambie
+  const { dateString, onChange } = props;
+  const [date, setDate] = React.useState<Date>()
+useEffect(() => {
+  console.log(date)
+  onChange(date)
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [date])
 
   return (
     <Popover>
@@ -34,7 +31,7 @@ export function CalendarComponent(props: CalendarComponentProps) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "P") : <span>Pick a new deadline</span>}
+          {date ? format(date, "Pp") : format(new Date(dateString), "Pp")}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

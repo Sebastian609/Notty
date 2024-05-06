@@ -10,7 +10,6 @@ const useTaskState = () =>
   };
 
   const updateTask = async(updatedTask:Task) =>{
-    console.log("s")
     const newTask: Task = await updateTask(updatedTask);
     return newTask;
   }

@@ -9,7 +9,10 @@ import { TaskStatus } from "../TaskStatus";
 import { Trash } from "../../Shared/Icons/Trash";
 import { TaskModal } from "../TaskModal";
 import { updateTask } from "@/app/Service/Notty-API/updateTask";
-import { verifyDataDescription, verifyDataName } from "@/app/Service/Notty-API/verifyUpdatedTask";
+import {
+  verifyDataDescription,
+  verifyDataName,
+} from "@/app/Service/Notty-API/verifyUpdatedTask";
 
 interface TaskProps {
   task: Task;
@@ -22,45 +25,36 @@ export default function TaskCard(props: TaskProps) {
   const { formatDate } = useDateFormat();
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar la visibilidad del modal
 
-  const handleMarkTaskAsComplete = async (idTask: number) => {
-    let newTask = await setTaskAsComplete(idTask);
-    if (newTask != undefined) {
-      setStatus(newTask.taskStatus);
-    }
-    console.log(newTask);
-  };
-
   const handleTrashClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     event.stopPropagation();
-    alert("eliminando");
   };
 
-  const handleCircleCheckClick = (
+  const handleCircleCheckClick = async (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     event.stopPropagation();
-    handleMarkTaskAsComplete(task.idTask);
+    const data = await setTaskAsComplete(task.idTask);
+    console.log(data);
+    setLocalTaskData(data);
   };
 
-  const verifyData = (updatedTask: Task):Task => {
-    
-    if(!verifyDataName(updatedTask)){
-      updatedTask.name=task.name;
+  const verifyData = (updatedTask: Task): Task => {
+    if (!verifyDataName(updatedTask)) {
+      updatedTask.name = task.name;
     }
 
-    if(!verifyDataDescription(updatedTask)){
-      updatedTask.description=task.description;
+    if (!verifyDataDescription(updatedTask)) {
+      updatedTask.description = task.description;
     }
-    console.log(updatedTask)
-    return updatedTask
+
+    return updatedTask;
   };
 
-  const handleHideModal  = async (updatedTask: Task) => {
+  const handleHideModal = async (updatedTask: Task) => {
     setIsModalOpen(false);
-    setLocalTaskData( await updateTask(verifyData(updatedTask)))
-
+    setLocalTaskData(await updateTask(verifyData(updatedTask)));
   };
 
   return (
@@ -84,7 +78,7 @@ export default function TaskCard(props: TaskProps) {
               onClick={handleTrashClick}
               className="w-6 h-6 transition ease-in hover:-translate-y-1 hover:scale-110 fill-slate-600  hover:fill-red-500"
             />
-            {status == "IN_PROGRESS" && (
+            {localTaskData.taskStatus == "IN_PROGRESS" && (
               <CircleCheck
                 onClick={handleCircleCheckClick}
                 className=" w-6 h-6 transition ease-in hover:-translate-y-1 hover:scale-110 fill-slate-600  hover:fill-emerald-500"
