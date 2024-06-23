@@ -20,12 +20,22 @@ const useTaskState = () =>
     const res: boolean = await deleteTask(idTask);
     return res  }
 
-  const createTask = async(task:Task) => {
-    const newTask:Task =  await createNewTask(task)
-    return newTask;
+  const createTask = async(task:Task):Promise<Task|null> => {
+    try {
+      const newTask:Task =  await createNewTask(task)
+      if(newTask===null){
+        return null
+      }
+      return newTask;
+    } catch (error) {
+      console.log("Error task creation");
+      return null
+      
+    }
+    
   }
 
 
-  return { markTaskAsComplete, updateTask,deleteTaskById };
+  return { markTaskAsComplete, updateTask,deleteTaskById,createTask };
 };
 export default useTaskState;

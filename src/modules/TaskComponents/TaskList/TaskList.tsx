@@ -6,24 +6,14 @@ import { TaskCard } from "../TaskCard";
 import { getMainTasks } from "@/Service/Notty-API/getMainTasks";
 import useTaskState from "@/hooks/useTaskState/useTaskState";
 
-
-export const TaskList = () => {
-
-  const [tasks, setTasks] = useState<Task[]>([]);
+interface TaskListProsp{
+  tasksList: Task[]
+}
+export const TaskList = (props:TaskListProsp) => {
+const {tasksList} =  props
+  const [tasks, setTasks] = useState<Task[]>(tasksList);
   const { deleteTaskById } = useTaskState()
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const tasksData = await getMainTasks(14);
-        setTasks(tasksData);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-
-    fetchTasks();
-  }, []);
 
   const handleOnDeleting = async (idTask: number) => {
     const res = await deleteTaskById(idTask)

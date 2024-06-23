@@ -1,38 +1,54 @@
-// hooks/useLogin.ts
-import { useState } from 'react';
+// useLogin.ts
 
-const useLogin = () => {
-  const [error, setError] = useState<string | null>(null);
-  
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username: email, password })
-      });
+"use server"; // Indica que este código se ejecuta en el servidor
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          return result.session; // Return session data on successful login
-        } else {
-          setError(result.message || 'Login failed');
-        }
-      } else {
-        setError('Failed to login');
-      }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      setError('Internal server error');
-    }
+import { createCookie } from "@/Service/Cookies/cookies";
 
-    return null;
-  };
-
-  return { login, error, setError };
+type LoginData = {
+  mail: string;
+  password: string;
 };
 
-export default useLogin;
+export const login = async (dataLogin: LoginData) => {
+  console.log(dataLogin);
+
+  try {
+    const backendHostname = process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME;
+
+    if (!backendHostname) {
+      throw new Error("Backend hostname is not defined.");
+    }
+
+    const response = await fetch(`${backendHostname}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataLogin),
+    });
+
+    if (response.ok) {
+      const idUser = response.headers.get("Authorization")?.split(" ")[1];
+      const token = response.headers.get("Authorization")?.split(" ")[0].trim().split(",")[0];
+      if (token) {
+        console.log("Login successful. Token:", token);
+        createCookie('token', token);
+        createCookie('idUser', idUser);
+
+        return {
+          token: token,
+          idUser: idUser
+        }; // Return the token
+      } else {
+        console.error("Login successful but token not found in headers.");
+        return false; // Token not found
+      }
+    } else {
+      console.error("Login failed. Status:", response.status);
+      return false; // Indicate failure
+    }
+  } catch (error) {
+    console.error("Error logging in:", error);
+    return false; // Indicate failure due to an error
+  }
+};

@@ -1,6 +1,11 @@
-import { Task } from "@/app/Dto/Task";
+import { getCookie } from "@/Service/Cookies/cookies";
+
 
 export const deleteTask = async (idTask: number): Promise<boolean> => {
+    const cookieToken = getCookie('token')
+    const token = cookieToken?.split(",")[0].trim()
+    const auth = `Bearer ${token}`;
+
     try {
 
         const response = await fetch(
@@ -9,7 +14,7 @@ export const deleteTask = async (idTask: number): Promise<boolean> => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': process.env.NEXT_PUBLIC_NOTTY_API_KEY || ''
+                    'Authorization': auth
                 },
                 
             }

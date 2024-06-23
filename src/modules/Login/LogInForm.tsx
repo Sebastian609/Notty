@@ -1,21 +1,41 @@
+// LogInForm.tsx
 "use client";
+import { login } from "@/hooks/useLogin";
+import { createCookie } from "@/Service/Cookies/cookies";
 import { FormEvent, useState } from "react";
-import useLogin from "@/hooks/useLogin";
-
+import { useRouter } from "next/navigation"; // Importar useRouter desde next/router
 
 export function LogInForm() {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const { login } = useLogin();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter(); // Instanciar useRouter para utilizar en el componente
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
-
     event.preventDefault();
-    setIsLoading(true)
+    setIsLoading(true);
+
     const formData = new FormData(event.currentTarget);
-    const loginResponse = await login(formData) 
-  
-      setIsLoading(isLoading!)
-    
+    const mail = formData.get("email");
+    const password = formData.get("password");
+
+    if (mail && password) {
+      const dataLogin = {
+        mail: mail.toString().toUpperCase(),
+        password: password.toString(),
+      };
+
+      const loginResponse = await login(dataLogin);
+
+      if (!loginResponse) {
+        alert("el usuario no existe");
+        return;
+      }
+      createCookie("token", loginResponse.token);
+      createCookie("idUser", loginResponse.idUser);
+
+      router.push("/dashboard");
+    }
+
+    setIsLoading(false);
   }
 
   return (
@@ -50,7 +70,7 @@ export function LogInForm() {
           className="w-full  bg-blue-500 text-white py-2 rounded-2xl"
           type="submit"
         >
-         {isLoading ? 'Loading...' : 'Submit'}
+          {isLoading ? "Loading..." : "Submit"}
         </button>
 
         <p className="text-center hover:text-slate-800 text-slate-300 transition-all ease-in">

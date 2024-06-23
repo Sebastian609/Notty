@@ -1,25 +1,60 @@
-'use client'
-import React, { ChangeEvent, useEffect, useState } from "react";
+"use client";
+import React, { ChangeEvent, useState } from "react";
 import { CreateTask } from "../../Shared/Icons/Create-Task";
-import { ScheduleIcon } from "../../Shared/Icons/SheduleIcon";
 import useDateFormat from "@/hooks/useDateFormat/useDateFormat";
-import { log } from "console";
+import { Task } from "@/Dto/Task";
+import { getCookie } from "@/Service/Cookies/cookies";
+import { useRouter } from "next/navigation";
+import { User } from "@/Dto/User";
+import useTaskState from "@/hooks/useTaskState/useTaskState";
 
 export default function TaskCreator() {
   const { getTomorrowFormatedDeadline } = useDateFormat();
-  
+  const { createTask } = useTaskState();
   const [taskText, setTaskText] = useState("");
-  const [deadline, setDeadline] = useState<string>(getTomorrowFormatedDeadline()); // Inicializar con la fecha actual en formato ISO
-  
+  const [deadline, setDeadline] = useState<string>(getTomorrowFormatedDeadline());
+  const router = useRouter();
 
+  const createNewTask = async (task: Task) => {
+    try {
+      const result = await createTask(task); // Asegúrate de esperar la llamada a createTask
+      if (result === null) {
+        alert("Task can't be created");
+        return;
+      }
+      window.location.reload();
+    } catch (error) {
+      alert("Internal error: " + error);
+    }
+  };
 
-  
-  const handleCreateTask = () => {
+  const handleCreateTask = async () => {
     if (taskText.trim() !== "" && deadline !== "") {
-    
-      // Aquí puedes realizar otras acciones, como enviar la tarea a un servidor, etc.
-      setTaskText(""); // Limpiar el campo de texto después de crear la tarea
-     
+      console.log(taskText);
+      const userId = getCookie("idUser");
+
+      if (userId === undefined) {
+        alert("Inicia sesión nuevamente");
+        router.push("/login");
+        return;
+      }
+
+      const userOwner: User = {
+        idUser: parseInt(userId),
+      };
+
+      const newTask: Task = {
+        idUserCreator: parseInt(userId),
+        name: taskText,
+        description: "",
+        activeTask: "true",
+        timeLimit: deadline,
+        userOwner: userOwner,
+      };
+
+      setTaskText("");
+      console.log(newTask);
+      await createNewTask(newTask); // Asegúrate de esperar la creación de la nueva tarea
     } else {
       alert("Por favor, ingresa el texto de la tarea y selecciona una fecha y hora.");
     }
@@ -34,14 +69,7 @@ export default function TaskCreator() {
 
   const handleDeadlineChange = (event: ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
-    if (inputValue) {
-      // Solo actualizar el estado si el valor no está vacío
-      console.log(inputValue);
-      
-      setDeadline(inputValue); // Actualizar el estado con la nueva fecha y hora seleccionada
-    } else {
-      setDeadline(""); // Si el valor es vacío, establecer el estado como una cadena vacía
-    }
+    setDeadline(inputValue); // Actualizar el estado con la nueva fecha y hora seleccionada
   };
 
   return (
@@ -58,12 +86,12 @@ export default function TaskCreator() {
       <div className="flex flex-row items-center gap-1 h-full">
         <input
           type="datetime-local"
-          onChange={(e) => handleDeadlineChange(e)}
+          onChange={handleDeadlineChange}
           value={deadline ? deadline : ""}
         />
-       
+
         <button
-          className="bg-emerald-400 h-5/6 my-2 mx-1 hover:border-2 hover:border-emerald-500 flex aspect-square justify-center items-center hover:bg-white transition font-medium text-2xl h rounded-full"
+          className="bg-emerald-400 h-5/6 my-2 mx-1 hover:border-2 hover:border-emerald-500 flex aspect-square justify-center items-center hover:bg-white transition font-medium text-2xl rounded-full"
           onClick={handleCreateTask}
         >
           <div className="flex justify-between items-center gap-4">

@@ -1,17 +1,25 @@
 import { Task } from "@/Dto/Task";
+import { getCookie } from "@/Service/Cookies/cookies";
 
-export const createNewTask = async (updatedTask: Task): Promise<Task> => {
+export const createNewTask = async (newTask: Task): Promise<Task> => {
+
+    const cookieToken = getCookie('token')
+    
+    const token = cookieToken?.split(",")[0].trim()
+    const auth = `Bearer ${token}`;
+
+
     try {
-        console.log(updatedTask)
+        console.log(newTask)
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME}/tasks`,
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': process.env.NEXT_PUBLIC_NOTTY_API_KEY || ''
+                    'Authorization': auth
                 },
-                body: JSON.stringify(updatedTask)
+                body: JSON.stringify(newTask)
             }
         );
 
@@ -30,7 +38,7 @@ export const createNewTask = async (updatedTask: Task): Promise<Task> => {
         }
 
         // Crea una nueva instancia de Task con los datos recibidos
-        const newTask: Task = new Task({
+        const newTaskInstance: Task = {
             idTask: taskData.idTask,
             idUserCreator: taskData.idUserCreator,
             taskStatus: taskData.taskStatus,
@@ -41,8 +49,8 @@ export const createNewTask = async (updatedTask: Task): Promise<Task> => {
             timeLimit: taskData.timeLimit,
             activeTask: taskData.activeTask,
             userOwner: { idUser: taskData.userOwner.idUser }
-        });
-        console.log(newTask)
+        };
+        console.log(newTaskInstance)
         return newTask;
     } catch (error) {
         console.error('Error updating task:', error);

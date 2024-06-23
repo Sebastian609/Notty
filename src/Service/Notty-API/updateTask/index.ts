@@ -1,22 +1,40 @@
+
 import { Task } from "@/Dto/Task";
+import { User } from "@/Dto/User";
+import { getCookie } from "@/Service/Cookies/cookies";
+
 
 export const updateTask = async (updatedTask: Task): Promise<Task> => {
+  
+    
+    const cookieToken = getCookie('token')
+    const userId = getCookie("idUser")  
+    console.log(userId);
+    
+    const token = cookieToken?.split(",")[0].trim()
+    const auth = `Bearer ${token}`;
+
+    
     try {
-        
+        if(userId===undefined){
+            throw new Error('Invalid user id');
+        }
+  
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME}/tasks`,
             {
                 method: 'PUT',
+                   
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': process.env.NEXT_PUBLIC_NOTTY_API_KEY || ''
+                    'Authorization': auth,
+                    'Content-Type': 'application/json' 
                 },
                 body: JSON.stringify(updatedTask)
             }
         );
 
         if (!response.ok) {
-            console.log("error")
+            console.log("error", response)
             throw new Error('Failed to update task');
             
         }
@@ -29,8 +47,12 @@ export const updateTask = async (updatedTask: Task): Promise<Task> => {
             throw new Error('Invalid task data received');
         }
 
+        const userOwner: User = {
+            idUser: parseInt(userId),
+        }
+
         // Crea una nueva instancia de Task con los datos recibidos
-        const updatedTaskInstance: Task = new Task({
+        const updatedTaskInstance: Task = {
             idTask: taskData.idTask,
             idUserCreator: taskData.idUserCreator,
             taskStatus: taskData.taskStatus,
@@ -40,9 +62,23 @@ export const updateTask = async (updatedTask: Task): Promise<Task> => {
             updatedAt: taskData.updatedAt,
             timeLimit: taskData.timeLimit,
             activeTask: taskData.activeTask,
-            userOwner: { idUser: taskData.userOwner.idUser }
-        });
-        console.log(updatedTaskInstance)
+            userOwner:  userOwner
+        };
+        /*
+         {
+    idTask: 1,
+    idUserCreator: 14,
+    taskStatus: 'COMPLETED',
+    name: 'hacer 2 hh',
+    description: 'enviarlas antes del amuerzo',
+    createrAt: '2024-04-24T18:55:21',
+    updatedAt: '2024-06-23T18:53:47.839',
+    timeLimit: '2024-04-27T16:00:00',
+    activeTask: true,
+    userOwner: { idUser: 14 }
+  }
+        */
+        console.log(updatedTask)
         return updatedTaskInstance;
     } catch (error) {
         console.error('Error updating task:', error);

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { CircleXmark } from "../../Shared/Icons/Circle-Xmark";
 import useDateFormat from "@/hooks/useDateFormat/useDateFormat";
 import { Combobox } from "../../ui/Combobox/Combobox";
-import { Alert } from "../../ui/Alert";
+
 
 interface TaskModalProps {
   task: Task;
@@ -29,8 +29,10 @@ export default function TaskModal(props: TaskModalProps):JSX.Element   {
   });
   
   useEffect(() => {
-    console.log(active)
-    const updatedTask = new Task({
+   
+  
+
+    const updatedTask: Task = {
       idTask: task.idTask,
       idUserCreator: task.idUserCreator,
       taskStatus: status != null ? status.value : task.taskStatus,
@@ -40,10 +42,11 @@ export default function TaskModal(props: TaskModalProps):JSX.Element   {
       updatedAt: new Date().toISOString(),
       timeLimit: deadline,
       activeTask: active,
-      userOwner: { idUser: task.userOwner.idUser },
-    });
+      userOwner:task.userOwner
+    
+    };
 
-    setLocalTaskData(updatedTask);
+    setLocalTaskData(updatedTask);  
     
   }, [deadline, name, description, task, status, active]);
 

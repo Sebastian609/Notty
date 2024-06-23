@@ -1,4 +1,5 @@
-import { Task } from "@/app/Dto/Task";
+import { Task } from "@/Dto/Task";
+
 
 export const verifyDataDescription = (updatedTask: Task): boolean => {
     if (updatedTask.description.trim() === "") {
