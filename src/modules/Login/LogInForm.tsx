@@ -31,6 +31,7 @@ export function LogInForm() {
       }
       createCookie("token", loginResponse.token);
       createCookie("idUser", loginResponse.idUser);
+      createCookie("name", loginResponse.name);
 
       router.push("/dashboard");
     }

@@ -2,7 +2,7 @@ import { Task } from "@/Dto/Task";
 
 
 export const verifyDataDescription = (updatedTask: Task): boolean => {
-    if (updatedTask.description.trim() === "") {
+    if (updatedTask.description &&   updatedTask.description.trim() === "") {
       return false;
     } else {
       return true;

@@ -9,17 +9,19 @@ export const updateTask = async (updatedTask: Task): Promise<Task> => {
     
     const cookieToken = getCookie('token')
     const userId = getCookie("idUser")  
-    console.log(userId);
     
     const token = cookieToken?.split(",")[0].trim()
     const auth = `Bearer ${token}`;
+    console.log(updatedTask);
+    
 
     
     try {
         if(userId===undefined){
             throw new Error('Invalid user id');
         }
-  
+        console.log(updatedTask);
+        
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME}/tasks`,
             {
@@ -54,7 +56,8 @@ export const updateTask = async (updatedTask: Task): Promise<Task> => {
         // Crea una nueva instancia de Task con los datos recibidos
         const updatedTaskInstance: Task = {
             idTask: taskData.idTask,
-            idUserCreator: taskData.idUserCreator,
+            type:"PERSONAL",
+            idUserCreator: userOwner,
             taskStatus: taskData.taskStatus,
             name: taskData.name,
             description: taskData.description,

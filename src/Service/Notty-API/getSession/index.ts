@@ -1,4 +1,4 @@
-import { Task } from "@/app/Dto/Task";
+
 
 export const getSession = async (email:string,password:string) => {
     console.log(`${process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME}/users/login/${email.toUpperCase()}/${password}`);

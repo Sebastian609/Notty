@@ -42,9 +42,12 @@ export default function TaskCreator() {
       const userOwner: User = {
         idUser: parseInt(userId),
       };
+      
 
       const newTask: Task = {
-        idUserCreator: parseInt(userId),
+        taskStatus:"IN_PROGRESS",
+        type:"PERSONAL",
+        idUserCreator: userOwner,
         name: taskText,
         description: "",
         activeTask: "true",

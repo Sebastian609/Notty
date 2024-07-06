@@ -1,5 +1,4 @@
 import { Task } from "@/Dto/Task";
-import { cookies } from "next/headers";
 import { getCookie } from "@/Service/Cookies/cookies";
 
 export const setTaskAsComplete = async (idTask: number): Promise<Task> => {

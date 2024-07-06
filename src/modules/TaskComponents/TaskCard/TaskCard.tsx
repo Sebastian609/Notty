@@ -40,12 +40,18 @@ export default function TaskCard(props: TaskProps) {
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     event.stopPropagation();
+    if(!task.idTask){
+      return
+    }
     const data = await setTaskAsComplete(task.idTask);
     console.log(data);
     setLocalTaskData(data);
   };
 
   const verifyData = (updatedTask: Task): Task => {
+
+
+
     if (!verifyDataName(updatedTask)) {
       updatedTask.name = task.name;
     }
@@ -54,13 +60,19 @@ export default function TaskCard(props: TaskProps) {
       updatedTask.description = task.description;
     }
 
+    updatedTask.type="PERSONAL"
+
+
     return updatedTask;
   };
 
 
   const handleHideModal = async (updatedTask: Task) => {
     setIsModalOpen(false);
-    setLocalTaskData(await updateTask(verifyData(updatedTask)));
+    console.log(updatedTask);
+    const data = verifyData(updatedTask)
+    const result = await updateTask(data)
+    setLocalTaskData(result);
    
   };
 
@@ -73,7 +85,7 @@ export default function TaskCard(props: TaskProps) {
         <div className="flex flex-row justify-between">
           <p className="font-bold text-xl text-left">{localTaskData.name}</p>
 
-          <TaskStatus statusName={localTaskData.taskStatus} />
+          <TaskStatus statusName={localTaskData.taskStatus}  />
         </div>
         <p>{localTaskData.description}</p>
         <div className="flex flex-row justify-between">

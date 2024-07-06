@@ -126,7 +126,7 @@ export default function TaskModal(props: TaskModalProps):JSX.Element   {
 
           <div className="flex justify-between items-center mt-4">
             <p className="text-sm text-gray-500">
-              Created at: {formatDate(task.createrAt)}
+              {task.createrAt && (<div>Created at: {formatDate(task.createrAt)}</div>)}
             </p>
             <div className="border-blue-600 border-2 p-2 rounded-lg text-blue-600 hover:bg-blue-600 hover:text-white transition">
              <button onClick={handleModalHide}>

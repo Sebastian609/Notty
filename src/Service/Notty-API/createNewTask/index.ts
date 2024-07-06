@@ -30,7 +30,8 @@ export const createNewTask = async (newTask: Task): Promise<Task> => {
         }
 
         const taskData = await response.json();
-
+        console.log(taskData);
+        
         // Verifica si la respuesta tiene el formato esperado
         if (!taskData || typeof taskData !== 'object') {
             console.log("error")
@@ -38,18 +39,7 @@ export const createNewTask = async (newTask: Task): Promise<Task> => {
         }
 
         // Crea una nueva instancia de Task con los datos recibidos
-        const newTaskInstance: Task = {
-            idTask: taskData.idTask,
-            idUserCreator: taskData.idUserCreator,
-            taskStatus: taskData.taskStatus,
-            name: taskData.name,
-            description: taskData.description,
-            createrAt: taskData.createrAt,
-            updatedAt: taskData.updatedAt,
-            timeLimit: taskData.timeLimit,
-            activeTask: taskData.activeTask,
-            userOwner: { idUser: taskData.userOwner.idUser }
-        };
+        const newTaskInstance: Task = taskData
         console.log(newTaskInstance)
         return newTask;
     } catch (error) {

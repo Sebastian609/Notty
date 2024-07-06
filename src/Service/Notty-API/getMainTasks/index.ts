@@ -12,9 +12,6 @@ export const getMainTasks = async (userId:number) => {
     const auth = `Bearer ${token}`; 
     
     try {
-        
-        
-    
         if (!userId) {
             throw new Error('User ID not found in cookies');
         }
@@ -22,7 +19,8 @@ export const getMainTasks = async (userId:number) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_NOTTY_BACKEND_HOSTNAME}/tasks/owner/activeTasks/${userId}`, {
             headers: {
                 'Authorization': auth,
-            }
+            },
+            
         });
 
        

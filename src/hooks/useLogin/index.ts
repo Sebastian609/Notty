@@ -37,7 +37,8 @@ export const login = async (dataLogin: LoginData) => {
 
         return {
           token: token,
-          idUser: idUser
+          idUser: idUser,
+          name: dataLogin.mail
         }; // Return the token
       } else {
         console.error("Login successful but token not found in headers.");
